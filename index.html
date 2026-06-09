@@ -6,256 +6,167 @@
   <title>MoneyHash — CIT Test</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f5f5f5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 32px 16px;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 32px 16px; }
     .container { width: 100%; max-width: 560px; }
     .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .top-bar h1 { font-size: 15px; font-weight: 600; color: #111; }
-    .badge { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; }
-    .badge-staging { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
-
-    /* Step indicators */
-    .steps { display: flex; gap: 0; margin-bottom: 24px; }
-    .step {
-      flex: 1; text-align: center; padding: 10px 4px; font-size: 11px;
-      color: #9CA3AF; border-bottom: 2px solid #E5E7EB; position: relative;
-    }
+    .badge { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .steps { display: flex; margin-bottom: 24px; }
+    .step { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; color: #9CA3AF; border-bottom: 2px solid #E5E7EB; }
     .step.active { color: #6366F1; border-bottom-color: #6366F1; font-weight: 600; }
     .step.done { color: #059669; border-bottom-color: #059669; }
-    .step-num {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 20px; height: 20px; border-radius: 50%; background: #E5E7EB;
-      color: #6B7280; font-size: 11px; font-weight: 600; margin-bottom: 4px;
-    }
+    .step-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: #E5E7EB; color: #6B7280; font-size: 11px; font-weight: 600; margin-bottom: 4px; }
     .step.active .step-num { background: #6366F1; color: #fff; }
     .step.done .step-num { background: #059669; color: #fff; }
-
-    /* Panels */
     .panel { background: #fff; border: 1px solid #E5E7EB; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
     .panel-title { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 14px; }
-
-    /* API key + intent row */
     .field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     .field-row label { font-size: 12px; color: #6B7280; font-weight: 500; }
-    .field-row input {
-      height: 40px; border: 1px solid #D1D5DB; border-radius: 8px;
-      padding: 0 12px; font-size: 14px; color: #111; outline: none; background: #fff;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
+    .field-row input { height: 40px; border: 1px solid #D1D5DB; border-radius: 8px; padding: 0 12px; font-size: 14px; color: #111; outline: none; background: #fff; font-family: 'SF Mono', 'Fira Code', monospace; }
     .field-row input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
-
-    .btn {
-      width: 100%; height: 42px; background: #111; color: #fff;
-      border: none; border-radius: 8px; font-size: 14px; font-weight: 500;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-    }
+    .btn { width: 100%; height: 42px; background: #111; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn:hover { background: #374151; }
     .btn:disabled { background: #9CA3AF; cursor: not-allowed; }
-    .btn-secondary {
-      background: #fff; color: #374151; border: 1px solid #D1D5DB;
-    }
-    .btn-secondary:hover { background: #F9FAFB; }
-
-    /* Method selection */
-    .method-list { display: flex; flex-direction: column; gap: 10px; }
-    .method-btn {
-      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-      border: 1px solid #E5E7EB; border-radius: 10px; background: #fff;
-      cursor: pointer; font-size: 14px; color: #111; font-weight: 500;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .method-btn:hover { border-color: #6366F1; background: #F5F3FF; }
-    .method-btn img { width: 28px; height: 18px; object-fit: contain; }
-    .method-icons { display: flex; gap: 4px; }
-
-    /* Embed iframe */
-    #embed-frame {
-      width: 100%; min-height: 500px; border: none; display: block;
-      border-radius: 10px; overflow: hidden;
-    }
-
-    /* Meta strip */
     .meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     .meta-card { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 12px; }
     .meta-card .label { font-size: 11px; color: #9CA3AF; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
     .meta-card .value { font-size: 13px; font-weight: 600; color: #111; }
-
-    /* Token result */
-    #token-box {
-      display: none; background: #ECFDF5; border: 1px solid #A7F3D0;
-      border-radius: 10px; padding: 16px;
-    }
+    .method-list { display: flex; flex-direction: column; gap: 10px; }
+    .method-btn { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #E5E7EB; border-radius: 10px; background: #fff; cursor: pointer; font-size: 14px; color: #111; font-weight: 500; }
+    .method-btn:hover { border-color: #6366F1; background: #F5F3FF; }
+    .method-btn img { width: 28px; height: 18px; object-fit: contain; }
+    .method-icons { display: flex; gap: 4px; }
+    #embed-frame { width: 100%; min-height: 520px; border: none; display: block; }
+    #token-box { display: none; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
     #token-box .t-label { font-size: 11px; color: #065F46; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; font-weight: 600; }
-    #token-box .t-value {
-      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px;
-      color: #065F46; word-break: break-all; background: #D1FAE5;
-      border-radius: 6px; padding: 8px 10px; margin-bottom: 8px;
-    }
+    #token-box .t-value { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; color: #065F46; word-break: break-all; background: #D1FAE5; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
     #token-box .t-hint { font-size: 12px; color: #047857; line-height: 1.6; }
-    #token-box .copy-btn {
-      margin-top: 10px; height: 34px; padding: 0 14px; background: #059669;
-      color: #fff; border: none; border-radius: 6px; font-size: 12px;
-      font-weight: 500; cursor: pointer;
-    }
-    #token-box .copy-btn:hover { background: #047857; }
-
-    /* Log */
+    .copy-btn { margin-top: 10px; height: 34px; padding: 0 14px; background: #059669; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; }
+    .copy-btn:hover { background: #047857; }
     .log-label { font-size: 11px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-    #event-log {
-      background: #1A1A1A; border-radius: 10px; padding: 12px 14px;
-      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11.5px;
-      color: #6B7280; max-height: 180px; overflow-y: auto;
-    }
+    #event-log { background: #1A1A1A; border-radius: 10px; padding: 12px 14px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11.5px; color: #6B7280; max-height: 220px; overflow-y: auto; }
     .ll { padding: 2px 0; line-height: 1.7; }
     .ll .ts { color: #374151; margin-right: 8px; }
-    .ll.ok  { color: #6EE7B7; }
+    .ll.ok { color: #6EE7B7; }
     .ll.err { color: #FCA5A5; }
     .ll.inf { color: #93C5FD; }
-
-    .spinner {
-      width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
-    }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .hidden { display: none !important; }
   </style>
 </head>
 <body>
 <div class="container">
-
   <div class="top-bar">
     <h1>MoneyHash — CIT Test</h1>
-    <span class="badge badge-staging">STAGING</span>
+    <span class="badge">STAGING</span>
   </div>
 
-  <!-- Step indicators -->
   <div class="steps">
-    <div class="step active" id="step1">
-      <div class="step-num">1</div><br>Create intent
-    </div>
-    <div class="step" id="step2">
-      <div class="step-num">2</div><br>Select method
-    </div>
-    <div class="step" id="step3">
-      <div class="step-num">3</div><br>Enter card
-    </div>
-    <div class="step" id="step4">
-      <div class="step-num">4</div><br>Complete
-    </div>
+    <div class="step active" id="step1"><div class="step-num">1</div><br>Load intent</div>
+    <div class="step" id="step2"><div class="step-num">2</div><br>Select method</div>
+    <div class="step" id="step3"><div class="step-num">3</div><br>Enter card</div>
+    <div class="step" id="step4"><div class="step-num">4</div><br>Complete</div>
   </div>
 
-  <!-- Meta strip (hidden until intent loads) -->
   <div class="meta hidden" id="meta-strip">
-    <div class="meta-card">
-      <div class="label">Amount</div>
-      <div class="value" id="m-amount">—</div>
-    </div>
-    <div class="meta-card">
-      <div class="label">Intent ID</div>
-      <div class="value" id="m-intent" style="font-size:11px; font-family: monospace;">—</div>
-    </div>
-    <div class="meta-card">
-      <div class="label">State</div>
-      <div class="value" id="m-state">—</div>
-    </div>
+    <div class="meta-card"><div class="label">Amount</div><div class="value" id="m-amount">—</div></div>
+    <div class="meta-card"><div class="label">Intent</div><div class="value" id="m-intent" style="font-size:11px;font-family:monospace">—</div></div>
+    <div class="meta-card"><div class="label">State</div><div class="value" id="m-state">—</div></div>
   </div>
 
-  <!-- PANEL 1: Config -->
+  <!-- Step 1: Config -->
   <div class="panel" id="panel-config">
-    <div class="panel-title">Step 1 — Enter intent details</div>
-
+    <div class="panel-title">Step 1 — Load intent</div>
     <div class="field-row">
-      <label>API Key (from MoneyHash dashboard)</label>
-      <input type="password" id="api-key" placeholder="Your staging API key" />
+      <label>API Key (Account API Key from MoneyHash dashboard)</label>
+      <input type="password" id="api-key" placeholder="Your staging account API key" />
     </div>
-
     <div class="field-row">
       <label>Intent ID (from Postman response)</label>
-      <input type="text" id="intent-id" placeholder="e.g. L50wGrJ" autocomplete="off" />
+      <input type="text" id="intent-id" placeholder="e.g. 9KWBDoR" autocomplete="off" />
     </div>
-
-    <button class="btn" id="load-btn" onclick="loadIntent()">
-      Load intent
-    </button>
+    <button class="btn" id="load-btn" onclick="loadIntent()">Load intent</button>
   </div>
 
-  <!-- PANEL 2: Method selection -->
+  <!-- Step 2: Method selection -->
   <div class="panel hidden" id="panel-methods">
     <div class="panel-title">Step 2 — Choose payment method</div>
     <div class="method-list" id="method-list"></div>
   </div>
 
-  <!-- PANEL 3: Card form embed -->
-  <div class="panel hidden" id="panel-embed" style="padding: 0; overflow: hidden;">
+  <!-- Step 3: Card embed iframe -->
+  <div class="panel hidden" id="panel-embed" style="padding:0;overflow:hidden;">
     <iframe id="embed-frame" src="" allow="payment *; camera *"></iframe>
   </div>
 
-  <!-- PANEL 4: Token result -->
+  <!-- Token result -->
   <div id="token-box">
     <div class="t-label">✓ CIT complete — card token for MIT</div>
     <div class="t-value" id="token-value">—</div>
-    <div class="t-hint">
-      Use this as <code>card_token</code> in your MIT Postman request, along with
-      <code>merchant_initiated: true</code> and <code>payment_type: "recurring"</code>.
-    </div>
+    <div class="t-hint">Copy this → use as <code>card_token</code> in MIT with <code>merchant_initiated: true</code></div>
     <button class="copy-btn" onclick="copyToken()">Copy token</button>
   </div>
 
-  <div class="log-label" style="margin-top: 16px;">Event log</div>
+  <div class="log-label" style="margin-top:8px;">Event log</div>
   <div id="event-log">
-    <div class="ll inf"><span class="ts">--:--:--</span>Ready — enter your API key and intent ID above</div>
+    <div class="ll inf"><span class="ts">--:--:--</span>Ready — enter API key and intent ID above</div>
   </div>
-
 </div>
 
 <script>
-  const BASE = '';  // proxy handles the real base URL
   let intentId = '';
   let apiKey   = '';
+  let pollTimer = null;
 
   function ts() { return new Date().toTimeString().slice(0,8); }
 
   function log(msg, type) {
     const el = document.getElementById('event-log');
-    const d  = document.createElement('div');
+    const d = document.createElement('div');
     d.className = 'll' + (type ? ' ' + type : '');
     d.innerHTML = '<span class="ts">' + ts() + '</span>' + msg;
     el.insertBefore(d, el.firstChild);
   }
 
   function setStep(n) {
-    for (let i = 1; i <= 4; i++) {
+    [1,2,3,4].forEach(i => {
       const s = document.getElementById('step' + i);
       s.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
-    }
+    });
   }
 
   function showPanel(id) {
-    ['panel-config','panel-methods','panel-embed'].forEach(p => {
-      document.getElementById(p).classList.add('hidden');
-    });
+    ['panel-config','panel-methods','panel-embed'].forEach(p =>
+      document.getElementById(p).classList.add('hidden')
+    );
     if (id) document.getElementById(id).classList.remove('hidden');
   }
 
   function setMeta(amount, intent, state) {
     document.getElementById('meta-strip').classList.remove('hidden');
-    if (amount) document.getElementById('m-amount').textContent  = amount;
-    if (intent) document.getElementById('m-intent').textContent  = intent;
-    if (state)  document.getElementById('m-state').textContent   = state;
+    if (amount !== null) document.getElementById('m-amount').textContent = amount;
+    if (intent !== null) document.getElementById('m-intent').textContent = intent;
+    if (state  !== null) document.getElementById('m-state').textContent  = state;
+  }
+
+  // Central proxy fetch — always uses X-Api-Key via apikey query param
+  async function mhFetch(path, method, body) {
+    const url = '/api/proxy?path=' + encodeURIComponent(path) + '&apikey=' + encodeURIComponent(apiKey);
+    const opts = {
+      method: method || 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(url, opts);
+    const data = await res.json();
+    if (!res.ok) throw new Error(JSON.stringify(data));
+    return data;
   }
 
   async function loadIntent() {
     apiKey   = document.getElementById('api-key').value.trim();
     intentId = document.getElementById('intent-id').value.trim();
-
     if (!apiKey)   { log('API key is required', 'err'); return; }
     if (!intentId) { log('Intent ID is required', 'err'); return; }
 
@@ -265,75 +176,94 @@
     log('Fetching intent: ' + intentId, 'inf');
 
     try {
-      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/') + '&apikey=' + encodeURIComponent(apiKey), {
-        headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' }
-      });
-      const data = await res.json();
+      // GET /api/v1.4/external/payments/intents/{id}/
+      // Response: { status, data: { intent, selected_method, transaction, state, state_details, customer, ... } }
+      const res  = await mhFetch('/api/v1.4/external/payments/intents/' + intentId + '/');
+      const d    = res.data;  // the actual payload
 
-      if (!res.ok) {
-        throw new Error(JSON.stringify(data));
-      }
+      log('Raw state: ' + d.state, 'inf');
 
-      const intent   = data.data.intent;
-      const state    = data.data.state;
-      const methods  = data.data.state_details?.payment_methods || [];
-
+      const amount = d.intent?.amount;
       setMeta(
-        intent.amount?.display_value || intent.amount?.value + ' ' + intent.amount?.currency,
+        amount?.display_value || (amount?.value + ' ' + amount?.currency) || '—',
         intentId,
-        state
+        d.state
       );
 
-      log('Intent loaded — state: ' + state, 'ok');
       btn.disabled = false;
       btn.textContent = 'Reload';
-
-      if (state === 'METHOD_SELECTION') {
-        renderMethods(methods, data.data.state_details?.express_methods || []);
-        setStep(2);
-        showPanel('panel-methods');
-      } else if (state === 'INTENT_FORM' || state === 'INTENT_NATIVE_FORM') {
-        // Already past method selection
-        const url = data.data.state_details?.embed_url;
-        if (url) loadEmbed(url);
-      } else if (state === 'INTENT_PROCESSED') {
-        handleSuccess(data.data);
-      } else if (state === 'EXPIRED') {
-        log('Intent is expired — create a new one in Postman', 'err');
-        setMeta(null, null, 'EXPIRED');
-        showPanel(null);
-      } else {
-        log('Unhandled state: ' + state + ' — check intent in Postman', 'inf');
-      }
+      handleState(d);
 
     } catch(e) {
-      log('Error: ' + (e.message || String(e)), 'err');
+      log('Error: ' + e.message, 'err');
       btn.disabled = false;
       btn.textContent = 'Load intent';
     }
   }
 
-  function renderMethods(methods, express) {
-    const all  = [...methods, ...express];
+  function handleState(d) {
+    const state = d.state;
+    setMeta(null, null, state);
+
+    if (state === 'METHOD_SELECTION') {
+      const methods = d.state_details?.payment_methods || [];
+      const express = d.state_details?.express_methods || [];
+      renderMethods([...methods, ...express]);
+      setStep(2);
+      showPanel('panel-methods');
+
+    } else if (state === 'INTENT_FORM') {
+      // MoneyHash sends embed_url to render in iframe
+      const url = d.state_details?.embed_url;
+      if (url) {
+        loadEmbed(url);
+      } else {
+        log('INTENT_FORM but no embed_url in state_details', 'err');
+        log('state_details: ' + JSON.stringify(d.state_details), 'inf');
+      }
+
+    } else if (state === 'INTENT_NATIVE_FORM') {
+      // Native card fields — also has embed_url
+      const url = d.state_details?.embed_url;
+      if (url) loadEmbed(url);
+
+    } else if (state === 'INTENT_PROCESSED') {
+      handleSuccess(d);
+
+    } else if (state === 'TRANSACTION_WAITING_USER_ACTION') {
+      log('Waiting for user action — polling…', 'inf');
+      startPolling();
+
+    } else if (state === 'TRANSACTION_FAILED') {
+      log('Transaction failed', 'err');
+      setStep(4);
+
+    } else if (state === 'EXPIRED') {
+      log('Intent expired — create a new one in Postman', 'err');
+      showPanel(null);
+
+    } else if (state === 'CLOSED') {
+      log('Intent closed', 'err');
+
+    } else {
+      log('State: ' + state + ' — state_details: ' + JSON.stringify(d.state_details).slice(0,200), 'inf');
+    }
+  }
+
+  function renderMethods(methods) {
     const list = document.getElementById('method-list');
     list.innerHTML = '';
-
-    if (all.length === 0) {
-      list.innerHTML = '<p style="color:#9CA3AF;font-size:13px;">No payment methods available for this intent.</p>';
+    if (!methods.length) {
+      list.innerHTML = '<p style="color:#9CA3AF;font-size:13px;">No payment methods available.</p>';
       return;
     }
-
-    all.forEach(m => {
+    methods.forEach(m => {
       const btn = document.createElement('button');
       btn.className = 'method-btn';
-
-      const iconsHtml = (m.checkout_icons || []).slice(0,3).map(src =>
-        '<img src="' + src + '" alt="" onerror="this.style.display=\'none\'">'
-      ).join('');
-
-      btn.innerHTML = '<div class="method-icons">' + iconsHtml + '</div>'
-        + '<span>' + m.payment_method_name + '</span>';
-
+      const icons = (m.checkout_icons || []).slice(0,3)
+        .map(src => '<img src="' + src + '" onerror="this.style.display=\'none\'">')
+        .join('');
+      btn.innerHTML = '<div class="method-icons">' + icons + '</div><span>' + m.payment_method_name + '</span>';
       btn.onclick = () => selectMethod(m.payment_method);
       list.appendChild(btn);
     });
@@ -342,68 +272,42 @@
   async function selectMethod(method) {
     log('Selecting method: ' + method, 'inf');
     setMeta(null, null, 'Selecting…');
-
     try {
-      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/update-method/') + '&apikey=' + encodeURIComponent(apiKey), {
-        method: 'POST',
-        headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_method: method })
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(JSON.stringify(data));
-
-      const state    = data.data.state;
-      const embedUrl = data.data.state_details?.embed_url;
-
-      setMeta(null, null, state);
-      log('Method selected — state: ' + state, 'ok');
-
-      if (embedUrl) {
-        loadEmbed(embedUrl);
-      } else {
-        log('No embed_url returned — state: ' + state, 'err');
-        log('Full response: ' + JSON.stringify(data.data.state_details).slice(0,200), 'inf');
-      }
-
+      // POST /api/v1.4/external/payments/intents/{id}/update-method/
+      // Response: { status, data: { intent, state, state_details, ... } }
+      const res = await mhFetch(
+        '/api/v1.4/external/payments/intents/' + intentId + '/update-method/',
+        'POST',
+        { payment_method: method }
+      );
+      log('update-method response state: ' + res.data.state, 'ok');
+      handleState(res.data);
     } catch(e) {
-      log('Error selecting method: ' + (e.message || String(e)), 'err');
+      log('Error selecting method: ' + e.message, 'err');
     }
   }
 
   function loadEmbed(url) {
-    log('Loading card form embed…', 'inf');
+    log('Loading embed: ' + url.slice(0,60) + '…', 'inf');
     setStep(3);
     showPanel('panel-embed');
-
-    const frame = document.getElementById('embed-frame');
-    frame.src = url;
-    setMeta(null, null, 'CARD_FORM');
-
-    // Poll intent every 3s to detect completion
+    document.getElementById('embed-frame').src = url;
+    setMeta(null, null, 'Card form loaded');
     startPolling();
   }
-
-  let pollTimer = null;
 
   function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
     let attempts = 0;
     pollTimer = setInterval(async () => {
-      attempts++;
-      if (attempts > 60) { clearInterval(pollTimer); return; } // 3 min timeout
-
+      if (++attempts > 80) { clearInterval(pollTimer); return; }
       try {
-        const res  = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/') + '&apikey=' + encodeURIComponent(apiKey), {
-          headers: { 'x-api-key': apiKey }
-        });
-        const data = await res.json();
-        const state = data.data.state;
+        const res   = await mhFetch('/api/v1.4/external/payments/intents/' + intentId + '/');
+        const state = res.data.state;
         setMeta(null, null, state);
-
         if (state === 'INTENT_PROCESSED') {
           clearInterval(pollTimer);
-          handleSuccess(data.data);
+          handleSuccess(res.data);
         } else if (state === 'TRANSACTION_FAILED') {
           clearInterval(pollTimer);
           log('Transaction failed', 'err');
@@ -412,32 +316,29 @@
           clearInterval(pollTimer);
           log('Intent ' + state.toLowerCase(), 'err');
         }
-      } catch(e) { /* silent poll errors */ }
+      } catch(e) { /* silent */ }
     }, 3000);
   }
 
-  function handleSuccess(data) {
+  function handleSuccess(d) {
     clearInterval(pollTimer);
     setStep(4);
     showPanel(null);
     setMeta(null, null, 'PROCESSED ✓');
-    log('✓ Payment completed!', 'ok');
+    log('✓ Payment complete!', 'ok');
 
-    // Try to find the card token in the response
-    const token = data?.tokenized_card_token
-      || data?.transaction?.card?.token
-      || data?.intent?.tokenized_card_token;
+    const token = d?.tokenized_card_token
+      || d?.transaction?.card?.token
+      || d?.intent?.tokenized_card_token;
 
     if (token) {
       log('card_token: ' + token, 'ok');
       document.getElementById('token-value').textContent = token;
-      document.getElementById('token-box').style.display = 'block';
-      document.getElementById('token-box').scrollIntoView({ behavior: 'smooth' });
     } else {
-      log('Payment done — card_token will arrive in your webhook (tokenize_card must be true in intent)', 'inf');
-      document.getElementById('token-value').textContent = 'Check your webhook endpoint for the card_token';
-      document.getElementById('token-box').style.display = 'block';
+      document.getElementById('token-value').textContent = 'Check webhook — card_token sent there (tokenize_card must be true)';
     }
+    document.getElementById('token-box').style.display = 'block';
+    document.getElementById('token-box').scrollIntoView({ behavior: 'smooth' });
   }
 
   function copyToken() {
