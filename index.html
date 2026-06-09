@@ -6,7 +6,6 @@
   <title>MoneyHash — Payment Test</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: #f5f5f5;
@@ -16,177 +15,87 @@
       align-items: center;
       padding: 32px 16px;
     }
-
-    .container {
-      width: 100%;
-      max-width: 520px;
-    }
-
+    .container { width: 100%; max-width: 520px; }
     .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
     }
-
-    .top-bar h1 {
-      font-size: 15px;
-      font-weight: 600;
-      color: #111;
-    }
-
+    .top-bar h1 { font-size: 15px; font-weight: 600; color: #111; }
     .badge {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 3px 9px;
-      border-radius: 20px;
-      letter-spacing: 0.03em;
+      font-size: 11px; font-weight: 500; padding: 3px 9px;
+      border-radius: 20px; letter-spacing: 0.03em;
     }
     .badge-staging { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
-    .badge-live    { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
-    .badge-status  { background: #F3F4F6; color: #374151; border: 1px solid #D1D5DB; }
-
     .meta {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;
     }
-
     .meta-card {
-      background: #fff;
-      border: 1px solid #E5E7EB;
-      border-radius: 10px;
-      padding: 10px 14px;
+      background: #fff; border: 1px solid #E5E7EB;
+      border-radius: 10px; padding: 10px 14px;
     }
-
     .meta-card .label {
-      font-size: 11px;
-      color: #9CA3AF;
-      margin-bottom: 3px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-size: 11px; color: #9CA3AF; margin-bottom: 3px;
+      text-transform: uppercase; letter-spacing: 0.05em;
     }
-
-    .meta-card .value {
-      font-size: 14px;
-      font-weight: 600;
-      color: #111;
-    }
-
-    /* Intent ID input row */
-    .intent-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
+    .meta-card .value { font-size: 14px; font-weight: 600; color: #111; }
+    .intent-row { display: flex; gap: 8px; margin-bottom: 20px; }
     .intent-row input {
-      flex: 1;
-      height: 38px;
-      border: 1px solid #D1D5DB;
-      border-radius: 8px;
-      padding: 0 12px;
-      font-size: 14px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      color: #111;
-      outline: none;
-      background: #fff;
+      flex: 1; height: 38px; border: 1px solid #D1D5DB;
+      border-radius: 8px; padding: 0 12px; font-size: 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace; color: #111; outline: none; background: #fff;
     }
-
     .intent-row input:focus {
-      border-color: #6366F1;
-      box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+      border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
     }
-
     .intent-row button {
-      height: 38px;
-      padding: 0 16px;
-      background: #111;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      white-space: nowrap;
+      height: 38px; padding: 0 16px; background: #111; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
     }
-
     .intent-row button:hover { background: #374151; }
-    .intent-row button:active { transform: scale(0.97); }
-
-    /* Embed wrapper */
+    .intent-row button:disabled { background: #9CA3AF; cursor: not-allowed; }
     .embed-wrapper {
-      background: #fff;
-      border: 1px solid #E5E7EB;
-      border-radius: 14px;
-      overflow: hidden;
-      min-height: 500px;
+      background: #fff; border: 1px solid #E5E7EB;
+      border-radius: 14px; overflow: hidden; min-height: 500px;
     }
-
-    #mh-mount {
-      min-height: 480px;
-      position: relative;
-    }
-
+    #mh-mount { min-height: 480px; position: relative; }
     .placeholder {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 480px;
-      gap: 10px;
-      color: #9CA3AF;
-      font-size: 14px;
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 480px; gap: 10px;
+      color: #9CA3AF; font-size: 14px;
     }
-
-    .placeholder svg {
-      opacity: 0.3;
-    }
-
-    /* Event log */
     .log-label {
-      font-size: 11px;
-      color: #9CA3AF;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 16px 0 6px;
+      font-size: 11px; color: #9CA3AF; text-transform: uppercase;
+      letter-spacing: 0.05em; margin: 16px 0 6px;
     }
-
     #event-log {
-      background: #1E1E1E;
-      border-radius: 10px;
-      padding: 12px 14px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 12px;
-      color: #9CA3AF;
-      max-height: 160px;
-      overflow-y: auto;
+      background: #1E1E1E; border-radius: 10px; padding: 12px 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
+      color: #9CA3AF; max-height: 180px; overflow-y: auto;
     }
-
     .log-line { padding: 2px 0; line-height: 1.6; }
     .log-line .ts { color: #555; margin-right: 8px; }
     .log-line.ok  { color: #6EE7B7; }
     .log-line.err { color: #FCA5A5; }
     .log-line.info { color: #93C5FD; }
+    .spinner {
+      display: inline-block; width: 18px; height: 18px;
+      border: 2px solid #E5E7EB; border-top-color: #6366F1;
+      border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-
 <div class="container">
-
   <div class="top-bar">
     <h1>MoneyHash Payment Test</h1>
     <span class="badge badge-staging">STAGING</span>
   </div>
 
-  <!-- Intent ID input — swap without editing the file -->
   <div class="intent-row">
     <input type="text" id="intent-input" placeholder="Paste intent ID (e.g. L50wGrJ)" value="L50wGrJ" />
-    <button onclick="loadIntent()">Load intent</button>
+    <button id="load-btn" onclick="loadIntent()">Load intent</button>
   </div>
 
-  <!-- Live meta pulled from the hardcoded response — updates on load -->
   <div class="meta">
     <div class="meta-card">
       <div class="label">Amount</div>
@@ -205,8 +114,8 @@
   <div class="embed-wrapper">
     <div id="mh-mount">
       <div class="placeholder" id="placeholder">
-        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#D1D5DB" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
             d="M3 10h18M7 15h1m4 0h1M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
         </svg>
         <span>Enter an intent ID and click Load intent</span>
@@ -216,20 +125,16 @@
 
   <div class="log-label">SDK event log</div>
   <div id="event-log">
-    <div class="log-line info"><span class="ts">--:--:--</span>Waiting for intent to load…</div>
+    <div class="log-line info"><span class="ts">--:--:--</span>Initialising SDK…</div>
   </div>
-
 </div>
 
-<!-- MoneyHash Staging SDK -->
-<script src="https://staging-embed.moneyhash.io/moneyhash-sdk.js"></script>
+<script type="module">
+  import MoneyHash from 'https://esm.sh/@moneyhash/js-sdk@latest';
 
-<script>
-  let mh = null;
+  let mhInstance = null;
 
-  function ts() {
-    return new Date().toTimeString().slice(0,8);
-  }
+  function ts() { return new Date().toTimeString().slice(0,8); }
 
   function addLog(msg, type) {
     const log = document.getElementById('event-log');
@@ -239,83 +144,92 @@
     log.insertBefore(line, log.firstChild);
   }
 
-  function loadIntent() {
+  window.loadIntent = async function() {
     const intentId = document.getElementById('intent-input').value.trim();
     if (!intentId) { addLog('No intent ID entered', 'err'); return; }
 
-    document.getElementById('placeholder').style.display = 'none';
+    const btn = document.getElementById('load-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>';
 
-    // Update meta cards
+    document.getElementById('placeholder').style.display = 'none';
     document.getElementById('meta-amount').textContent = '—';
     document.getElementById('meta-customer').textContent = '—';
     document.getElementById('meta-state').textContent = 'Loading…';
 
     addLog('Loading intent: ' + intentId, 'info');
 
-    // Destroy previous instance if any
-    if (mh) {
-      try { mh.unmount(); } catch(e) {}
-    }
-
-    // Clear mount point
+    // Clear mount and destroy previous instance
     const mount = document.getElementById('mh-mount');
     mount.innerHTML = '';
+    if (mhInstance) {
+      try { mhInstance.unmount && mhInstance.unmount(); } catch(e) {}
+    }
 
     try {
-      mh = new MoneyHash({ type: 'payment' });
+      mhInstance = new MoneyHash({ type: 'payment' });
 
-      // Start intent and render
-      mh.start({
-        intentId: intentId,
+      // Render the SDK into the mount div
+      await mhInstance.start({
+        intentId,
         selector: '#mh-mount',
       });
 
-      addLog('SDK started — rendering embed…', 'info');
+      addLog('SDK rendered successfully', 'ok');
+      btn.disabled = false;
+      btn.textContent = 'Load intent';
 
-      // Listen for SDK events
-      mh.on('payment:completed', function(data) {
-        addLog('✓ Payment completed', 'ok');
-        addLog('card_token: ' + (data?.card_token || 'check transaction response'), 'ok');
-        document.getElementById('meta-state').textContent = 'COMPLETED';
-      });
-
-      mh.on('payment:failed', function(data) {
-        addLog('Payment failed: ' + JSON.stringify(data).slice(0,100), 'err');
-        document.getElementById('meta-state').textContent = 'FAILED';
-      });
-
-      mh.on('intent:stateChange', function(data) {
-        const state = data?.state || data?.intent?.status || '';
+      // State change handler
+      mhInstance.on('intent:stateChange', (data) => {
+        const state = data?.state ?? data?.intent?.status ?? '';
         addLog('State → ' + state, 'info');
         document.getElementById('meta-state').textContent = state;
 
-        // Populate meta on first state event
         const amount = data?.intent?.amount;
         if (amount) {
-          document.getElementById('meta-amount').textContent = amount.display_value || amount.value + ' ' + amount.currency;
+          document.getElementById('meta-amount').textContent =
+            amount.display_value || (amount.value + ' ' + amount.currency);
         }
         const customer = data?.customer;
         if (customer) {
-          document.getElementById('meta-customer').textContent = customer.first_name + ' ' + customer.last_name;
+          document.getElementById('meta-customer').textContent =
+            (customer.first_name || '') + ' ' + (customer.last_name || '');
         }
       });
 
-      mh.on('intent:expired', function() {
+      mhInstance.on('payment:completed', (data) => {
+        addLog('✓ Payment completed!', 'ok');
+        const token = data?.card_token || data?.tokenized_card_token;
+        if (token) addLog('card_token for MIT: ' + token, 'ok');
+        document.getElementById('meta-state').textContent = 'COMPLETED';
+      });
+
+      mhInstance.on('payment:failed', (data) => {
+        addLog('Payment failed: ' + JSON.stringify(data || {}).slice(0,120), 'err');
+        document.getElementById('meta-state').textContent = 'FAILED';
+        btn.disabled = false;
+        btn.textContent = 'Load intent';
+      });
+
+      mhInstance.on('intent:expired', () => {
         addLog('Intent expired', 'err');
         document.getElementById('meta-state').textContent = 'EXPIRED';
+        btn.disabled = false;
+        btn.textContent = 'Load intent';
       });
 
     } catch(e) {
-      addLog('SDK error: ' + e.message, 'err');
+      addLog('SDK error: ' + (e?.message || String(e)), 'err');
+      document.getElementById('meta-state').textContent = 'ERROR';
+      btn.disabled = false;
+      btn.textContent = 'Load intent';
     }
-  }
+  };
 
-  // Auto-load on page open if there's a default intent ID
-  window.addEventListener('load', function() {
-    const val = document.getElementById('intent-input').value.trim();
-    if (val) loadIntent();
-  });
+  // Auto-load on page open
+  addLog('SDK loaded via esm.sh', 'ok');
+  const defaultId = document.getElementById('intent-input').value.trim();
+  if (defaultId) window.loadIntent();
 </script>
-
 </body>
 </html>
