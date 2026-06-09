@@ -282,20 +282,20 @@
     setMeta(null, null, 'Submitting…');
 
     try {
-      // Step 1: POST card details to vault → get card_details token
+      // Step 1: POST card details to vault via proxy (avoids CORS)
       log('Submitting card to vault…', 'inf');
-      const vaultRes = await fetch(vaultUrl, {
+      const vaultProxyUrl = '/api/proxy?path=/vault&vaulturl=' + encodeURIComponent(vaultUrl) + '&vaultsecret=' + encodeURIComponent(vaultSecret);
+      const vaultRes = await fetch(vaultProxyUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + vaultSecret
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           card_number:      cardNumber,
           card_holder_name: cardHolderName,
           expiry_month:     expiryMonth,
           expiry_year:      expiryYear,
-          cvv:              cvv
+          cvv:              cvv,
+          is_live:          true,
+          save_card:        false
         })
       });
       const vaultData = await vaultRes.json();
