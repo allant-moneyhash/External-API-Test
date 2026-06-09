@@ -181,14 +181,21 @@
       const res  = await mhFetch('/api/v1.4/external/payments/intents/' + intentId + '/');
       const d    = res.data;  // the actual payload
 
-      log('Full response: ' + JSON.stringify(res).slice(0, 500), 'inf');
-      log('Raw state: ' + d.state, 'inf');
+      // Full response logged to console for debugging
+      console.log('Full MH response:', JSON.stringify(res));
 
+      // Based on actual API response: the outer wrapper is { status, data: { intent, state, state_details, ... } }
+      // BUT the GET endpoint wraps differently - state_details contains methods
+      // d = res.data which has: intent{}, state, state_details{payment_methods, express_methods}, customer, etc.
       const intentObj = d.intent;
-      const amount = intentObj?.amount;
-      const amountStr = amount?.display_value || (amount?.value && amount?.currency ? amount.value + ' ' + amount.currency : '—');
-      setMeta(amountStr, intentId, d.state);
+      const amount    = intentObj?.amount;
+      const amountStr = amount?.display_value || '—';
+      const state     = d.state || '?';
+      const sdMethods = d.state_details?.payment_methods || [];
+      const sdExpress = d.state_details?.express_methods || [];
 
+      log('state=' + state + ' methods=' + sdMethods.length + ' express=' + sdExpress.length + ' amount=' + amountStr, 'inf');
+      setMeta(amountStr, intentId, state);
       btn.disabled = false;
       btn.textContent = 'Reload';
       handleState(d);
@@ -205,8 +212,8 @@
     setMeta(null, null, state);
 
     if (state === 'METHOD_SELECTION') {
-      const methods = (d.state_details?.payment_methods?.length ? d.state_details.payment_methods : d.intent?.methods?.payment_methods) || [];
-      const express = (d.state_details?.express_methods?.length ? d.state_details.express_methods : d.intent?.methods?.express_methods) || [];
+      const methods = d.state_details?.payment_methods || d.intent?.methods?.payment_methods || [];
+      const express = d.state_details?.express_methods || d.intent?.methods?.express_methods || [];
       log('Methods found: ' + methods.length + ' payment, ' + express.length + ' express', 'inf');
       renderMethods([...methods, ...express]);
       setStep(2);
