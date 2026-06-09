@@ -183,12 +183,10 @@
 
       log('Raw state: ' + d.state, 'inf');
 
-      const amount = d.intent?.amount;
-      setMeta(
-        amount?.display_value || (amount?.value + ' ' + amount?.currency) || '—',
-        intentId,
-        d.state
-      );
+      const intentObj = d.intent;
+      const amount = intentObj?.amount;
+      const amountStr = amount?.display_value || (amount?.value && amount?.currency ? amount.value + ' ' + amount.currency : '—');
+      setMeta(amountStr, intentId, d.state);
 
       btn.disabled = false;
       btn.textContent = 'Reload';
@@ -206,8 +204,9 @@
     setMeta(null, null, state);
 
     if (state === 'METHOD_SELECTION') {
-      const methods = d.state_details?.payment_methods || [];
-      const express = d.state_details?.express_methods || [];
+      const methods = (d.state_details?.payment_methods?.length ? d.state_details.payment_methods : d.intent?.methods?.payment_methods) || [];
+      const express = (d.state_details?.express_methods?.length ? d.state_details.express_methods : d.intent?.methods?.express_methods) || [];
+      log('Methods found: ' + methods.length + ' payment, ' + express.length + ' express', 'inf');
       renderMethods([...methods, ...express]);
       setStep(2);
       showPanel('panel-methods');
