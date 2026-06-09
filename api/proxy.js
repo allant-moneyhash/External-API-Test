@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     const fetchOptions = {
       method: req.method,
       headers: {
-        'Authorization': 'Api-Key ' + apiKey,
+        'Authorization': 'X-Api-Key ' + apiKey,
         'Content-Type': 'application/json',
       },
     };
