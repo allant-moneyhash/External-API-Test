@@ -15,73 +15,69 @@
       align-items: center;
       padding: 32px 16px;
     }
-    .container { width: 100%; max-width: 520px; }
-    .top-bar {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
-    }
+    .container { width: 100%; max-width: 540px; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
     .top-bar h1 { font-size: 15px; font-weight: 600; color: #111; }
-    .badge {
-      font-size: 11px; font-weight: 500; padding: 3px 9px;
-      border-radius: 20px; letter-spacing: 0.03em;
-    }
+    .badge { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.03em; }
     .badge-staging { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
-    .meta {
-      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px;
-    }
-    .meta-card {
-      background: #fff; border: 1px solid #E5E7EB;
-      border-radius: 10px; padding: 10px 14px;
-    }
-    .meta-card .label {
-      font-size: 11px; color: #9CA3AF; margin-bottom: 3px;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
+    .meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .meta-card { background: #fff; border: 1px solid #E5E7EB; border-radius: 10px; padding: 10px 14px; }
+    .meta-card .label { font-size: 11px; color: #9CA3AF; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
     .meta-card .value { font-size: 14px; font-weight: 600; color: #111; }
     .intent-row { display: flex; gap: 8px; margin-bottom: 20px; }
     .intent-row input {
-      flex: 1; height: 38px; border: 1px solid #D1D5DB;
-      border-radius: 8px; padding: 0 12px; font-size: 14px;
-      font-family: 'SF Mono', 'Fira Code', monospace; color: #111; outline: none; background: #fff;
+      flex: 1; height: 40px; border: 1px solid #D1D5DB; border-radius: 8px;
+      padding: 0 12px; font-size: 14px; font-family: 'SF Mono', 'Fira Code', monospace;
+      color: #111; outline: none; background: #fff;
     }
-    .intent-row input:focus {
-      border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
-    }
+    .intent-row input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
     .intent-row button {
-      height: 38px; padding: 0 16px; background: #111; color: #fff;
-      border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer;
+      height: 40px; padding: 0 18px; background: #111; color: #fff;
+      border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
     }
     .intent-row button:hover { background: #374151; }
     .intent-row button:disabled { background: #9CA3AF; cursor: not-allowed; }
     .embed-wrapper {
-      background: #fff; border: 1px solid #E5E7EB;
-      border-radius: 14px; overflow: hidden; min-height: 500px;
+      background: #fff; border: 1px solid #E5E7EB; border-radius: 14px;
+      overflow: hidden; min-height: 500px;
     }
     #mh-mount { min-height: 480px; position: relative; }
+    /* Required by SDK for URL_TO_RENDER iframe state */
+    #rendered-url-iframe-container { width: 100%; min-height: 400px; }
     .placeholder {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; min-height: 480px; gap: 10px;
-      color: #9CA3AF; font-size: 14px;
+      justify-content: center; min-height: 480px; gap: 12px; color: #9CA3AF; font-size: 14px;
     }
-    .log-label {
-      font-size: 11px; color: #9CA3AF; text-transform: uppercase;
-      letter-spacing: 0.05em; margin: 16px 0 6px;
-    }
+    .log-label { font-size: 11px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.05em; margin: 16px 0 6px; }
     #event-log {
       background: #1E1E1E; border-radius: 10px; padding: 12px 14px;
       font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12px;
-      color: #9CA3AF; max-height: 180px; overflow-y: auto;
+      color: #9CA3AF; max-height: 200px; overflow-y: auto;
     }
-    .log-line { padding: 2px 0; line-height: 1.6; }
-    .log-line .ts { color: #555; margin-right: 8px; }
-    .log-line.ok  { color: #6EE7B7; }
-    .log-line.err { color: #FCA5A5; }
+    .log-line { padding: 2px 0; line-height: 1.7; }
+    .log-line .ts { color: #4B5563; margin-right: 8px; }
+    .log-line.ok   { color: #6EE7B7; }
+    .log-line.err  { color: #FCA5A5; }
     .log-line.info { color: #93C5FD; }
     .spinner {
-      display: inline-block; width: 18px; height: 18px;
-      border: 2px solid #E5E7EB; border-top-color: #6366F1;
-      border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle;
+      display: inline-block; width: 14px; height: 14px; vertical-align: middle;
+      border: 2px solid rgba(255,255,255,0.4); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* token result box */
+    #token-box {
+      display: none; margin-top: 16px; background: #ECFDF5;
+      border: 1px solid #6EE7B7; border-radius: 10px; padding: 14px 16px;
+    }
+    #token-box .token-label { font-size: 11px; color: #065F46; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    #token-box .token-value {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px;
+      color: #065F46; word-break: break-all; background: #D1FAE5;
+      border-radius: 6px; padding: 8px 10px;
+    }
+    #token-box .token-hint { font-size: 12px; color: #047857; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -92,7 +88,7 @@
   </div>
 
   <div class="intent-row">
-    <input type="text" id="intent-input" placeholder="Paste intent ID (e.g. L50wGrJ)"  />
+    <input type="text" id="intent-input" placeholder="Paste intent ID from Postman" autocomplete="off" />
     <button id="load-btn" onclick="loadIntent()">Load intent</button>
   </div>
 
@@ -114,23 +110,33 @@
   <div class="embed-wrapper">
     <div id="mh-mount">
       <div class="placeholder" id="placeholder">
-        <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#D1D5DB" stroke-width="1.5">
+        <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="#D1D5DB" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M3 10h18M7 15h1m4 0h1M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
         </svg>
-        <span>Enter an intent ID and click Load intent</span>
+        <span>Paste an intent ID above and click Load intent</span>
+        <span style="font-size:12px; color: #D1D5DB;">Make sure the intent was created with use_external_api: true</span>
       </div>
+      <!-- Required container for SDK URL_TO_RENDER iframe state -->
+      <div id="rendered-url-iframe-container"></div>
     </div>
+  </div>
+
+  <!-- Card token result — shown after successful CIT -->
+  <div id="token-box">
+    <div class="token-label">Card token (use this for MIT)</div>
+    <div class="token-value" id="token-value">—</div>
+    <div class="token-hint">Copy this value → use as <code>card_token</code> in your MIT Postman request with <code>merchant_initiated: true</code></div>
   </div>
 
   <div class="log-label">SDK event log</div>
   <div id="event-log">
-    <div class="log-line info"><span class="ts">--:--:--</span>Initialising SDK…</div>
+    <div class="log-line info"><span class="ts">--:--:--</span>Ready — waiting for intent ID…</div>
   </div>
 </div>
 
 <script type="module">
-  import MoneyHash from 'https://esm.sh/@moneyhash/js-sdk@latest';
+  import MoneyHash from 'https://esm.sh/@moneyhash/js-sdk@latest/headless';
 
   let mhInstance = null;
 
@@ -144,89 +150,104 @@
     log.insertBefore(line, log.firstChild);
   }
 
+  function setBtn(loading) {
+    const btn = document.getElementById('load-btn');
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? '<span class="spinner"></span>Loading…'
+      : 'Load intent';
+  }
+
+  function setMeta(label, customer, state) {
+    if (label)    document.getElementById('meta-amount').textContent   = label;
+    if (customer) document.getElementById('meta-customer').textContent = customer;
+    if (state)    document.getElementById('meta-state').textContent    = state;
+  }
+
+  function showToken(token) {
+    document.getElementById('token-value').textContent = token;
+    document.getElementById('token-box').style.display = 'block';
+    document.getElementById('token-box').scrollIntoView({ behavior: 'smooth' });
+  }
+
   window.loadIntent = async function() {
     const intentId = document.getElementById('intent-input').value.trim();
     if (!intentId) { addLog('No intent ID entered', 'err'); return; }
 
-    const btn = document.getElementById('load-btn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>';
-
+    setBtn(true);
     document.getElementById('placeholder').style.display = 'none';
-    document.getElementById('meta-amount').textContent = '—';
-    document.getElementById('meta-customer').textContent = '—';
-    document.getElementById('meta-state').textContent = 'Loading…';
-
+    document.getElementById('token-box').style.display = 'none';
+    document.getElementById('rendered-url-iframe-container').innerHTML = '';
+    setMeta('—', '—', 'Loading…');
     addLog('Loading intent: ' + intentId, 'info');
 
-    // Clear mount and destroy previous instance
-    const mount = document.getElementById('mh-mount');
-    mount.innerHTML = '';
-    if (mhInstance) {
-      try { mhInstance.unmount && mhInstance.unmount(); } catch(e) {}
-    }
+    // Clean up previous instance
+    if (mhInstance) { try { mhInstance.unmount && mhInstance.unmount(); } catch(e) {} }
 
     try {
       mhInstance = new MoneyHash({ type: 'payment' });
 
-      // Render the SDK into the mount div
-      await mhInstance.start({
+      // renderForm handles the full embed — METHOD_SELECTION → FORM_FIELDS → done
+      // It resolves with final intent details when the flow completes
+      addLog('Calling renderForm…', 'info');
+
+      const result = await mhInstance.renderForm({
         intentId,
         selector: '#mh-mount',
+        onHeightChange: (h) => {
+          document.getElementById('mh-mount').style.minHeight = h + 'px';
+        },
       });
 
-      addLog('SDK rendered successfully', 'ok');
-      btn.disabled = false;
-      btn.textContent = 'Load intent';
+      setBtn(false);
+      addLog('renderForm resolved — state: ' + (result?.state ?? 'unknown'), 'ok');
 
-      // State change handler
-      mhInstance.on('intent:stateChange', (data) => {
-        const state = data?.state ?? data?.intent?.status ?? '';
-        addLog('State → ' + state, 'info');
-        document.getElementById('meta-state').textContent = state;
+      // Update meta from result
+      const intent   = result?.intent;
+      const customer = result?.customer;
+      const txn      = result?.transaction;
 
-        const amount = data?.intent?.amount;
-        if (amount) {
-          document.getElementById('meta-amount').textContent =
-            amount.display_value || (amount.value + ' ' + amount.currency);
+      if (intent?.amount) {
+        setMeta(intent.amount.display_value || intent.amount.value + ' ' + intent.amount.currency, null, null);
+      }
+      if (customer) {
+        setMeta(null, (customer.first_name || '') + ' ' + (customer.last_name || ''), null);
+      }
+      setMeta(null, null, result?.state ?? '—');
+
+      // Success states
+      if (result?.state === 'INTENT_PROCESSED') {
+        addLog('✓ Payment completed successfully!', 'ok');
+        // Card token can be on the transaction or intent
+        const token = result?.tokenized_card_token
+          || txn?.card?.token
+          || intent?.tokenized_card_token;
+        if (token) {
+          addLog('card_token: ' + token, 'ok');
+          showToken(token);
+        } else {
+          addLog('Payment done — check webhook for card_token (tokenize_card may need to be true in intent)', 'info');
         }
-        const customer = data?.customer;
-        if (customer) {
-          document.getElementById('meta-customer').textContent =
-            (customer.first_name || '') + ' ' + (customer.last_name || '');
-        }
-      });
-
-      mhInstance.on('payment:completed', (data) => {
-        addLog('✓ Payment completed!', 'ok');
-        const token = data?.card_token || data?.tokenized_card_token;
-        if (token) addLog('card_token for MIT: ' + token, 'ok');
-        document.getElementById('meta-state').textContent = 'COMPLETED';
-      });
-
-      mhInstance.on('payment:failed', (data) => {
-        addLog('Payment failed: ' + JSON.stringify(data || {}).slice(0,120), 'err');
-        document.getElementById('meta-state').textContent = 'FAILED';
-        btn.disabled = false;
-        btn.textContent = 'Load intent';
-      });
-
-      mhInstance.on('intent:expired', () => {
+      } else if (result?.state === 'TRANSACTION_FAILED') {
+        addLog('Payment failed', 'err');
+      } else if (result?.state === 'EXPIRED') {
         addLog('Intent expired', 'err');
-        document.getElementById('meta-state').textContent = 'EXPIRED';
-        btn.disabled = false;
-        btn.textContent = 'Load intent';
-      });
+      }
 
     } catch(e) {
-      addLog('SDK error: ' + (e?.message || String(e)), 'err');
-      document.getElementById('meta-state').textContent = 'ERROR';
-      btn.disabled = false;
-      btn.textContent = 'Load intent';
+      setBtn(false);
+      const msg = e?.message || String(e);
+      addLog('Error: ' + msg, 'err');
+      setMeta(null, null, 'ERROR');
+
+      // If it's a redirect-related error, hint about use_external_api
+      if (msg.toLowerCase().includes('redirect') || msg.toLowerCase().includes('popup')) {
+        addLog('Hint: intent may not have use_external_api: true — create a new one in Postman', 'info');
+      }
     }
   };
 
-  addLog('SDK loaded — paste your intent ID and click Load intent', 'ok');
+  addLog('SDK ready — paste intent ID and click Load intent', 'ok');
 </script>
 </body>
 </html>
