@@ -22,6 +22,7 @@ export default async function handler(req, res) {
     if (vaulturl && vaultsecret) {
       // Vault call — uses MH-AUTHORIZATION header
       url = decodeURIComponent(vaulturl);
+      console.log('Vault URL:', url);
       headers = {
         'Content-Type': 'application/json',
         'MH-AUTHORIZATION': decodeURIComponent(vaultsecret),
