@@ -92,7 +92,7 @@
   </div>
 
   <div class="intent-row">
-    <input type="text" id="intent-input" placeholder="Paste intent ID (e.g. L50wGrJ)" value="L50wGrJ" />
+    <input type="text" id="intent-input" placeholder="Paste intent ID (e.g. L50wGrJ)"  />
     <button id="load-btn" onclick="loadIntent()">Load intent</button>
   </div>
 
@@ -226,10 +226,7 @@
     }
   };
 
-  // Auto-load on page open
-  addLog('SDK loaded via esm.sh', 'ok');
-  const defaultId = document.getElementById('intent-input').value.trim();
-  if (defaultId) window.loadIntent();
+  addLog('SDK loaded — paste your intent ID and click Load intent', 'ok');
 </script>
 </body>
 </html>
