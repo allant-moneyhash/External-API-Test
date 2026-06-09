@@ -240,8 +240,7 @@
 
       if (sd?.meta?.url && sd?.meta?.secret) {
         // Native card form — vault URL + secret returned
-        // Force correct vault API version (meta.url returns v1.4 but vault only supports v1)
-      vaultUrl    = sd.meta.url.replace('/api/v1.4/', '/api/v1/');
+        vaultUrl    = sd.meta.url;  // Use URL exactly as returned by API
         vaultSecret = sd.meta.secret;
 
         // Pre-fill email from billing if present
