@@ -217,7 +217,7 @@
 </div>
 
 <script>
-  const BASE = 'https://web.moneyhash.io';
+  const BASE = '';  // proxy handles the real base URL
   let intentId = '';
   let apiKey   = '';
 
@@ -265,8 +265,8 @@
     log('Fetching intent: ' + intentId, 'inf');
 
     try {
-      const res = await fetch(BASE + '/api/v1.4/external/payments/intents/' + intentId + '/', {
-        headers: { 'Authorization': 'Api-Key ' + apiKey, 'Content-Type': 'application/json' }
+      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/'), {
+        headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' }
       });
       const data = await res.json();
 
@@ -344,9 +344,9 @@
     setMeta(null, null, 'Selecting…');
 
     try {
-      const res = await fetch(BASE + '/api/v1.4/external/payments/intents/' + intentId + '/update-method/', {
+      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/update-method/'), {
         method: 'POST',
-        headers: { 'Authorization': 'Api-Key ' + apiKey, 'Content-Type': 'application/json' },
+        headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
         body: JSON.stringify({ payment_method: method })
       });
       const data = await res.json();
@@ -394,8 +394,8 @@
       if (attempts > 60) { clearInterval(pollTimer); return; } // 3 min timeout
 
       try {
-        const res  = await fetch(BASE + '/api/v1.4/external/payments/intents/' + intentId + '/', {
-          headers: { 'Authorization': 'Api-Key ' + apiKey }
+        const res  = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/'), {
+          headers: { 'x-api-key': apiKey }
         });
         const data = await res.json();
         const state = data.data.state;
