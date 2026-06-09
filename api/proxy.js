@@ -9,20 +9,29 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // Debug endpoint - check this first before any other validation
+  // Debug: always check first — visit ?debug=1 to inspect
   if (req.query.debug) {
-    return res.status(200).json({ headers: req.headers, query: req.query });
+    return res.status(200).json({
+      version: 'v4',
+      method: req.method,
+      received_headers: req.headers,
+      query: req.query,
+    });
   }
 
   const { path } = req.query;
-  if (!path) return res.status(400).json({ error: 'Missing path' });
+  if (!path) return res.status(400).json({ error: 'Missing path', version: 'v4' });
 
-  const apiKey = req.headers['x-api-key'];
+  // Accept key from header OR query param (fallback for debugging)
+  const apiKey = req.headers['x-api-key'] || req.query.apikey;
   if (!apiKey) {
-    return res.status(400).json({ error: 'Missing API key', received_headers: Object.keys(req.headers) });
+    return res.status(400).json({
+      error: 'Missing API key',
+      version: 'v4',
+      headers_received: Object.keys(req.headers),
+    });
   }
 
-  // Staging base URL
   const url = 'https://staging-web.moneyhash.io' + decodeURIComponent(path);
 
   try {
@@ -42,6 +51,6 @@ export default async function handler(req, res) {
     const data = await upstream.json();
     return res.status(upstream.status).json(data);
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e.message, version: 'v4' });
   }
 }
