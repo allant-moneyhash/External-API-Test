@@ -283,6 +283,7 @@
 
     try {
       // Step 1: POST card details to vault via proxy (avoids CORS)
+      log('Vault URL: ' + vaultUrl, 'inf');
       log('Submitting card to vault…', 'inf');
       const vaultProxyUrl = '/api/proxy?path=/vault&vaulturl=' + encodeURIComponent(vaultUrl) + '&vaultsecret=' + encodeURIComponent(vaultSecret);
       const vaultRes = await fetch(vaultProxyUrl, {
