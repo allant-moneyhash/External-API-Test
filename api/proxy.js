@@ -9,16 +9,21 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
+  // Debug endpoint - check this first before any other validation
+  if (req.query.debug) {
+    return res.status(200).json({ headers: req.headers, query: req.query });
+  }
+
   const { path } = req.query;
   if (!path) return res.status(400).json({ error: 'Missing path' });
 
   const apiKey = req.headers['x-api-key'];
-
   if (!apiKey) {
-    return res.status(400).json({ error: 'Missing x-api-key header' });
+    return res.status(400).json({ error: 'Missing API key', received_headers: Object.keys(req.headers) });
   }
 
-  const url = 'https://web.moneyhash.io' + decodeURIComponent(path);
+  // Staging base URL
+  const url = 'https://staging-web.moneyhash.io' + decodeURIComponent(path);
 
   try {
     const fetchOptions = {
