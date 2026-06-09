@@ -22,14 +22,12 @@
     .panel-title { font-size: 13px; font-weight: 600; color: #111; margin-bottom: 14px; }
     .field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
     .field-row label { font-size: 12px; color: #6B7280; font-weight: 500; }
-    .field-row input, .field-row textarea {
-      border: 1px solid #D1D5DB; border-radius: 8px; padding: 10px 12px;
-      font-size: 13px; color: #111; outline: none; background: #fff;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-    }
+    .field-row input, .field-row textarea { border: 1px solid #D1D5DB; border-radius: 8px; padding: 10px 12px; font-size: 13px; color: #111; outline: none; background: #fff; }
     .field-row input { height: 40px; }
-    .field-row textarea { height: 100px; resize: vertical; font-size: 11px; }
+    .field-row textarea { height: 90px; resize: vertical; font-size: 11px; font-family: monospace; }
     .field-row input:focus, .field-row textarea:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
     .btn { width: 100%; height: 42px; background: #111; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn:hover { background: #374151; }
     .btn:disabled { background: #9CA3AF; cursor: not-allowed; }
@@ -42,14 +40,13 @@
     .method-btn:hover { border-color: #6366F1; background: #F5F3FF; }
     .method-btn img { width: 28px; height: 18px; object-fit: contain; }
     .method-icons { display: flex; gap: 4px; }
-    #embed-frame { width: 100%; min-height: 520px; border: none; display: block; }
     #token-box { display: none; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
     #token-box .t-label { font-size: 11px; color: #065F46; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; font-weight: 600; }
-    #token-box .t-value { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; color: #065F46; word-break: break-all; background: #D1FAE5; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
+    #token-box .t-value { font-family: monospace; font-size: 13px; color: #065F46; word-break: break-all; background: #D1FAE5; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; }
     #token-box .t-hint { font-size: 12px; color: #047857; line-height: 1.6; }
     .copy-btn { margin-top: 10px; height: 34px; padding: 0 14px; background: #059669; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; }
     .log-label { font-size: 11px; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
-    #event-log { background: #1A1A1A; border-radius: 10px; padding: 12px 14px; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 11.5px; color: #6B7280; max-height: 220px; overflow-y: auto; }
+    #event-log { background: #1A1A1A; border-radius: 10px; padding: 12px 14px; font-family: monospace; font-size: 11.5px; color: #6B7280; max-height: 220px; overflow-y: auto; }
     .ll { padding: 2px 0; line-height: 1.7; }
     .ll .ts { color: #374151; margin-right: 8px; }
     .ll.ok { color: #6EE7B7; }
@@ -58,6 +55,9 @@
     .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .hidden { display: none !important; }
+    .card-preview { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 12px; padding: 20px; color: #fff; margin-bottom: 20px; font-family: monospace; }
+    .card-preview .card-num { font-size: 18px; letter-spacing: 3px; margin: 12px 0; }
+    .card-preview .card-meta { display: flex; gap: 24px; font-size: 12px; opacity: 0.7; }
   </style>
 </head>
 <body>
@@ -80,18 +80,18 @@
     <div class="meta-card"><div class="label">State</div><div class="value" id="m-state">—</div></div>
   </div>
 
-  <!-- Step 1: Paste Postman response -->
+  <!-- Step 1 -->
   <div class="panel" id="panel-config">
     <div class="panel-title">Step 1 — Paste your Postman create-intent response</div>
     <div class="field-row">
-      <label>API Key</label>
+      <label>API Key (Account API Key)</label>
       <input type="password" id="api-key" placeholder="Your staging account API key" />
     </div>
     <div class="field-row">
-      <label>Paste full JSON response from POST /external/payments/intent/</label>
+      <label>Full JSON response from POST /external/payments/intent/</label>
       <textarea id="intent-json" placeholder='{ "status": { "code": 200 ... }, "data": { ... } }'></textarea>
     </div>
-    <button class="btn" id="load-btn" onclick="loadFromJson()">Load intent</button>
+    <button class="btn" onclick="loadFromJson()">Load intent</button>
   </div>
 
   <!-- Step 2: Method selection -->
@@ -100,9 +100,36 @@
     <div class="method-list" id="method-list"></div>
   </div>
 
-  <!-- Step 3: Embed iframe -->
-  <div class="panel hidden" id="panel-embed" style="padding:0;overflow:hidden;">
-    <iframe id="embed-frame" src="" allow="payment *; camera *"></iframe>
+  <!-- Step 3: Native card form -->
+  <div class="panel hidden" id="panel-card">
+    <div class="panel-title">Step 3 — Enter card details</div>
+    <div class="field-row">
+      <label>Card number</label>
+      <input type="text" id="f-card_number" placeholder="1234 5678 9012 3456" maxlength="19" />
+    </div>
+    <div class="field-row">
+      <label>Card holder name</label>
+      <input type="text" id="f-card_holder_name" placeholder="Name as on card" />
+    </div>
+    <div class="three-col">
+      <div class="field-row">
+        <label>Expiry month</label>
+        <input type="text" id="f-expiry_month" placeholder="MM" maxlength="2" />
+      </div>
+      <div class="field-row">
+        <label>Expiry year</label>
+        <input type="text" id="f-expiry_year" placeholder="YY" maxlength="2" />
+      </div>
+      <div class="field-row">
+        <label>CVV</label>
+        <input type="password" id="f-cvv" placeholder="•••" maxlength="4" />
+      </div>
+    </div>
+    <div class="field-row">
+      <label>Email</label>
+      <input type="email" id="f-email" placeholder="customer@email.com" />
+    </div>
+    <button class="btn" id="pay-btn" onclick="submitCard()">Pay now</button>
   </div>
 
   <!-- Token result -->
@@ -120,9 +147,11 @@
 </div>
 
 <script>
-  let intentId  = '';
-  let apiKey    = '';
-  let pollTimer = null;
+  let intentId   = '';
+  let apiKey     = '';
+  let vaultUrl   = '';
+  let vaultSecret = '';
+  let pollTimer  = null;
 
   function ts() { return new Date().toTimeString().slice(0,8); }
   function log(msg, type) {
@@ -139,7 +168,7 @@
     });
   }
   function showPanel(id) {
-    ['panel-config','panel-methods','panel-embed'].forEach(p =>
+    ['panel-config','panel-methods','panel-card'].forEach(p =>
       document.getElementById(p).classList.add('hidden')
     );
     if (id) document.getElementById(id).classList.remove('hidden');
@@ -150,7 +179,6 @@
     if (intent !== null) document.getElementById('m-intent').textContent = intent;
     if (state  !== null) document.getElementById('m-state').textContent  = state;
   }
-
   async function mhFetch(path, method, body) {
     const url  = '/api/proxy?path=' + encodeURIComponent(path) + '&apikey=' + encodeURIComponent(apiKey);
     const opts = { method: method || 'GET', headers: { 'Content-Type': 'application/json' } };
@@ -164,57 +192,31 @@
   function loadFromJson() {
     apiKey = document.getElementById('api-key').value.trim();
     const raw = document.getElementById('intent-json').value.trim();
-
-    if (!apiKey) { log('API key is required', 'err'); return; }
-    if (!raw)    { log('Paste your Postman JSON response first', 'err'); return; }
+    if (!apiKey) { log('API key required', 'err'); return; }
+    if (!raw)    { log('Paste your Postman JSON first', 'err'); return; }
 
     let parsed;
-    try {
-      parsed = JSON.parse(raw);
-    } catch(e) {
-      log('Invalid JSON — copy the full response from Postman', 'err');
-      return;
-    }
+    try { parsed = JSON.parse(raw); }
+    catch(e) { log('Invalid JSON', 'err'); return; }
 
-    // The create intent response structure:
-    // { status: {...}, data: { intent: {...}, state, state_details, customer, ... } }
     const d = parsed.data;
-    if (!d) { log('No "data" key found in response', 'err'); return; }
-
     intentId = d.intent?.id;
-    if (!intentId) { log('Could not find intent ID in response', 'err'); return; }
-
     const amount = d.intent?.amount;
-    setMeta(
-      amount?.display_value || '—',
-      intentId,
-      d.state || '—'
-    );
-
-    log('Intent loaded: ' + intentId + ' | state: ' + d.state, 'ok');
+    setMeta(amount?.display_value || '—', intentId, d.state);
+    log('Loaded intent: ' + intentId + ' | state: ' + d.state, 'ok');
 
     const methods = d.state_details?.payment_methods || [];
     const express = d.state_details?.express_methods  || [];
-    log('Methods: ' + methods.length + ' payment, ' + express.length + ' express', 'inf');
-
-    if (d.state === 'METHOD_SELECTION') {
-      renderMethods([...methods, ...express]);
-      setStep(2);
-      showPanel('panel-methods');
-    } else {
-      log('Unexpected state: ' + d.state, 'err');
-    }
+    renderMethods([...methods, ...express]);
+    setStep(2);
+    showPanel('panel-methods');
   }
 
   function renderMethods(methods) {
     const list = document.getElementById('method-list');
     list.innerHTML = '';
-    if (!methods.length) {
-      list.innerHTML = '<p style="color:#9CA3AF;font-size:13px;">No methods in response.</p>';
-      return;
-    }
     methods.forEach(m => {
-      const btn   = document.createElement('button');
+      const btn = document.createElement('button');
       btn.className = 'method-btn';
       const icons = (m.checkout_icons || []).slice(0,3)
         .map(src => '<img src="' + src + '" onerror="this.style.display=\'none\'">')
@@ -226,37 +228,122 @@
   }
 
   async function selectMethod(method) {
-    log('Selecting method: ' + method, 'inf');
-    setMeta(null, null, 'Selecting…');
+    log('Selecting: ' + method, 'inf');
     try {
-      // POST /api/v1.4/external/payments/intents/{id}/update-method/
-      // Returns: { data: { state, state_details: { embed_url }, ... } }
       const res = await mhFetch(
         '/api/v1.4/external/payments/intents/' + intentId + '/update-method/',
         'POST',
         { payment_method: method }
       );
-      console.log('update-method response:', JSON.stringify(res));
-      log('update-method state: ' + (res.data?.state || '?'), 'ok');
+      const sd = res.data?.state_details;
+      log('State after method: ' + res.data?.state, 'ok');
 
-      const embedUrl = res.data?.state_details?.embed_url;
-      if (embedUrl) {
-        loadEmbed(embedUrl);
+      if (sd?.meta?.url && sd?.meta?.secret) {
+        // Native card form — vault URL + secret returned
+        vaultUrl    = sd.meta.url;
+        vaultSecret = sd.meta.secret;
+
+        // Pre-fill email from billing if present
+        const emailField = sd.billing?.fields?.find(f => f.field_name === 'email');
+        if (emailField?.value) document.getElementById('f-email').value = emailField.value;
+
+        setStep(3);
+        showPanel('panel-card');
+        setMeta(null, null, 'Card form');
+        log('Native card form ready — enter card details', 'inf');
+
+      } else if (sd?.embed_url) {
+        // Hosted embed — shouldn't happen for this account but handle it
+        log('Got embed_url — loading iframe', 'inf');
+        showEmbedIframe(sd.embed_url);
       } else {
-        log('No embed_url returned. Full state_details: ' + JSON.stringify(res.data?.state_details), 'err');
+        log('Unknown state_details: ' + JSON.stringify(sd), 'err');
       }
     } catch(e) {
       log('Error: ' + e.message, 'err');
     }
   }
 
-  function loadEmbed(url) {
-    log('Loading card form…', 'inf');
-    setStep(3);
-    showPanel('panel-embed');
-    document.getElementById('embed-frame').src = url;
-    setMeta(null, null, 'Card form');
-    startPolling();
+  async function submitCard() {
+    const cardNumber     = document.getElementById('f-card_number').value.replace(/\s/g,'');
+    const cardHolderName = document.getElementById('f-card_holder_name').value.trim();
+    const expiryMonth    = document.getElementById('f-expiry_month').value.trim();
+    const expiryYear     = document.getElementById('f-expiry_year').value.trim();
+    const cvv            = document.getElementById('f-cvv').value.trim();
+    const email          = document.getElementById('f-email').value.trim();
+
+    if (!cardNumber || !cardHolderName || !expiryMonth || !expiryYear || !cvv) {
+      log('Fill in all card fields', 'err'); return;
+    }
+
+    const btn = document.getElementById('pay-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Processing…';
+    setMeta(null, null, 'Submitting…');
+
+    try {
+      // Step 1: POST card details to vault → get card_details token
+      log('Submitting card to vault…', 'inf');
+      const vaultRes = await fetch(vaultUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + vaultSecret
+        },
+        body: JSON.stringify({
+          card_number:      cardNumber,
+          card_holder_name: cardHolderName,
+          expiry_month:     expiryMonth,
+          expiry_year:      expiryYear,
+          cvv:              cvv
+        })
+      });
+      const vaultData = await vaultRes.json();
+      if (!vaultRes.ok) throw new Error('Vault error: ' + JSON.stringify(vaultData));
+      log('Vault response received', 'ok');
+      console.log('Vault response:', vaultData);
+
+      // Step 2: POST to update-method with card_details + billing
+      log('Submitting payment…', 'inf');
+      const payRes = await mhFetch(
+        '/api/v1.4/external/payments/intents/' + intentId + '/CARD/',
+        'POST',
+        {
+          native_form: {
+            card_details: vaultData,
+            billing_fields: { email }
+          }
+        }
+      );
+      console.log('Pay response:', payRes);
+      log('Pay response state: ' + (payRes.data?.state || '?'), 'ok');
+
+      btn.disabled = false;
+      btn.textContent = 'Pay now';
+
+      const state = payRes.data?.state;
+      setMeta(null, null, state);
+
+      if (state === 'INTENT_PROCESSED') {
+        handleSuccess(payRes.data);
+      } else if (state === 'INTENT_FORM') {
+        // 3DS redirect needed
+        const url = payRes.data?.state_details?.embed_url;
+        if (url) {
+          log('3DS required — opening in new tab', 'inf');
+          window.open(url, '_blank');
+          startPolling();
+        }
+      } else {
+        log('State: ' + state + ' — polling for completion…', 'inf');
+        startPolling();
+      }
+
+    } catch(e) {
+      log('Error: ' + e.message, 'err');
+      btn.disabled = false;
+      btn.textContent = 'Pay now';
+    }
   }
 
   function startPolling() {
@@ -265,19 +352,15 @@
     pollTimer = setInterval(async () => {
       if (++attempts > 80) { clearInterval(pollTimer); return; }
       try {
-        const res   = await mhFetch('/api/v1.4/external/payments/intents/' + intentId + '/');
-        // Poll endpoint returns intent object directly in data — check status field
-        const state = res.data?.state || res.data?.status;
-        setMeta(null, null, state || '…');
-        if (state === 'INTENT_PROCESSED' || res.data?.active_transaction?.status === 'successful') {
-          clearInterval(pollTimer);
-          handleSuccess(res.data);
-        } else if (state === 'TRANSACTION_FAILED') {
-          clearInterval(pollTimer);
-          log('Transaction failed', 'err');
-          setStep(4);
+        const res = await mhFetch('/api/v1.4/external/payments/intents/' + intentId + '/');
+        const status = res.data?.status || res.data?.state;
+        setMeta(null, null, status || '…');
+        if (res.data?.active_transaction?.status === 'successful' || status === 'INTENT_PROCESSED') {
+          clearInterval(pollTimer); handleSuccess(res.data);
+        } else if (status === 'TRANSACTION_FAILED' || res.data?.active_transaction?.status === 'failed') {
+          clearInterval(pollTimer); log('Transaction failed', 'err'); setStep(4);
         }
-      } catch(e) { /* silent */ }
+      } catch(e) {}
     }, 3000);
   }
 
@@ -288,7 +371,7 @@
     setMeta(null, null, 'PROCESSED ✓');
     log('✓ Payment complete!', 'ok');
     const token = d?.tokenized_card_token || d?.intent?.tokenized_card_token;
-    document.getElementById('token-value').textContent = token || 'Check your webhook — card_token sent there';
+    document.getElementById('token-value').textContent = token || 'Check your webhook for card_token';
     document.getElementById('token-box').style.display = 'block';
     document.getElementById('token-box').scrollIntoView({ behavior: 'smooth' });
   }
