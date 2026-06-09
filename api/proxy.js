@@ -1,7 +1,11 @@
+export const config = {
+  api: { bodyParser: true }
+};
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-api-key');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -9,20 +13,27 @@ export default async function handler(req, res) {
   if (!path) return res.status(400).json({ error: 'Missing path' });
 
   const apiKey = req.headers['x-api-key'];
-  if (!apiKey) return res.status(400).json({ error: 'Missing API key' });
+
+  if (!apiKey) {
+    return res.status(400).json({ error: 'Missing x-api-key header' });
+  }
 
   const url = 'https://web.moneyhash.io' + decodeURIComponent(path);
 
   try {
-    const upstream = await fetch(url, {
+    const fetchOptions = {
       method: req.method,
       headers: {
         'Authorization': 'Api-Key ' + apiKey,
         'Content-Type': 'application/json',
       },
-      body: req.method !== 'GET' ? JSON.stringify(req.body) : undefined,
-    });
+    };
 
+    if (req.method === 'POST' && req.body) {
+      fetchOptions.body = JSON.stringify(req.body);
+    }
+
+    const upstream = await fetch(url, fetchOptions);
     const data = await upstream.json();
     return res.status(upstream.status).json(data);
   } catch (e) {
