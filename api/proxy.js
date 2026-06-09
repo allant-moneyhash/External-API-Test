@@ -9,40 +9,34 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // Debug: always check first — visit ?debug=1 to inspect
   if (req.query.debug) {
-    return res.status(200).json({
-      version: 'v4',
-      method: req.method,
-      received_headers: req.headers,
-      query: req.query,
-    });
+    return res.status(200).json({ version: 'v6', method: req.method, query: req.query });
   }
 
-  const { path } = req.query;
-  if (!path) return res.status(400).json({ error: 'Missing path', version: 'v4' });
-
-  // Accept key from header OR query param (fallback for debugging)
-  const apiKey = req.headers['x-api-key'] || req.query.apikey;
-  if (!apiKey) {
-    return res.status(400).json({
-      error: 'Missing API key',
-      version: 'v4',
-      headers_received: Object.keys(req.headers),
-    });
-  }
-
-  const url = 'https://staging-web.moneyhash.io' + decodeURIComponent(path);
+  const { path, apikey, vaulturl, vaultsecret } = req.query;
+  if (!path) return res.status(400).json({ error: 'Missing path', version: 'v6' });
 
   try {
-    const fetchOptions = {
-      method: req.method,
-      headers: {
-        'X-Api-Key': apiKey,
-        'Content-Type': 'application/json',
-      },
-    };
+    let url, headers;
 
+    if (vaulturl && vaultsecret) {
+      // Vault call — uses MH-AUTHORIZATION header
+      url = decodeURIComponent(vaulturl);
+      headers = {
+        'Content-Type': 'application/json',
+        'MH-AUTHORIZATION': decodeURIComponent(vaultsecret),
+      };
+    } else {
+      // Standard MoneyHash API call — uses X-Api-Key header
+      if (!apikey) return res.status(400).json({ error: 'Missing apikey', version: 'v6' });
+      url = 'https://staging-web.moneyhash.io' + decodeURIComponent(path);
+      headers = {
+        'Content-Type': 'application/json',
+        'X-Api-Key': decodeURIComponent(apikey),
+      };
+    }
+
+    const fetchOptions = { method: req.method, headers };
     if (req.method === 'POST' && req.body) {
       fetchOptions.body = JSON.stringify(req.body);
     }
@@ -50,7 +44,8 @@ export default async function handler(req, res) {
     const upstream = await fetch(url, fetchOptions);
     const data = await upstream.json();
     return res.status(upstream.status).json(data);
+
   } catch (e) {
-    return res.status(500).json({ error: e.message, version: 'v4' });
+    return res.status(500).json({ error: e.message, version: 'v6' });
   }
 }
