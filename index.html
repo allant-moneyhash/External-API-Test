@@ -265,7 +265,7 @@
     log('Fetching intent: ' + intentId, 'inf');
 
     try {
-      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/'), {
+      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/') + '&apikey=' + encodeURIComponent(apiKey), {
         headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' }
       });
       const data = await res.json();
@@ -344,7 +344,7 @@
     setMeta(null, null, 'Selecting…');
 
     try {
-      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/update-method/'), {
+      const res = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/update-method/') + '&apikey=' + encodeURIComponent(apiKey), {
         method: 'POST',
         headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
         body: JSON.stringify({ payment_method: method })
@@ -394,7 +394,7 @@
       if (attempts > 60) { clearInterval(pollTimer); return; } // 3 min timeout
 
       try {
-        const res  = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/'), {
+        const res  = await fetch('/api/proxy?path=' + encodeURIComponent('/api/v1.4/external/payments/intents/' + intentId + '/') + '&apikey=' + encodeURIComponent(apiKey), {
           headers: { 'x-api-key': apiKey }
         });
         const data = await res.json();
