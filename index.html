@@ -181,6 +181,7 @@
       const res  = await mhFetch('/api/v1.4/external/payments/intents/' + intentId + '/');
       const d    = res.data;  // the actual payload
 
+      log('Full response: ' + JSON.stringify(res).slice(0, 500), 'inf');
       log('Raw state: ' + d.state, 'inf');
 
       const intentObj = d.intent;
