@@ -10,26 +10,24 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.query.debug) {
-    return res.status(200).json({ version: 'v6', method: req.method, query: req.query });
+    return res.status(200).json({ version: 'v7', query: req.query });
   }
 
   const { path, apikey, vaulturl, vaultsecret } = req.query;
-  if (!path) return res.status(400).json({ error: 'Missing path', version: 'v6' });
 
   try {
     let url, headers;
 
-    if (vaulturl && vaultsecret) {
-      // Vault call — uses MH-AUTHORIZATION header
+    if (vaulturl) {
+      // Vault call — full URL provided directly, use MH-AUTHORIZATION
       url = decodeURIComponent(vaulturl);
-      console.log('Vault URL:', url);
       headers = {
         'Content-Type': 'application/json',
         'MH-AUTHORIZATION': decodeURIComponent(vaultsecret),
       };
     } else {
-      // Standard MoneyHash API call — uses X-Api-Key header
-      if (!apikey) return res.status(400).json({ error: 'Missing apikey', version: 'v6' });
+      // Standard MoneyHash API call
+      if (!apikey || !path) return res.status(400).json({ error: 'Missing apikey or path', version: 'v7' });
       url = 'https://staging-web.moneyhash.io' + decodeURIComponent(path);
       headers = {
         'Content-Type': 'application/json',
@@ -43,10 +41,16 @@ export default async function handler(req, res) {
     }
 
     const upstream = await fetch(url, fetchOptions);
-    const data = await upstream.json();
+
+    // Always try JSON, fall back to text for debugging
+    const text = await upstream.text();
+    let data;
+    try { data = JSON.parse(text); }
+    catch(e) { return res.status(upstream.status).json({ error: 'Non-JSON response from upstream', body: text.slice(0, 500), url }); }
+
     return res.status(upstream.status).json(data);
 
   } catch (e) {
-    return res.status(500).json({ error: e.message, version: 'v6' });
+    return res.status(500).json({ error: e.message, version: 'v7' });
   }
 }
